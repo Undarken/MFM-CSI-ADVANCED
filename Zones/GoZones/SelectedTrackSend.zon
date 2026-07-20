@@ -1,67 +1,128 @@
+// =====================================================================
+// ZONE: SelectedTrackSend
+// VERSION: v2.3  /  MOD-7
+//
+// Changes from MOD-6:
+//   - Rotary1 (prev/next FX) moved to Up/Down buttons
+//   - Rotary| now = TrackSendVolume (Mirror Rule: mirrors Fader)
+//   - Up  = SendDest_PrevFX.lua  → _RS_PLACEHOLDER_PREVFX
+//   - Down = SendDest_NextFX.lua → _RS_PLACEHOLDER_NEXTFX
+//   Load SendDest_PrevFX.lua and SendDest_NextFX.lua into Action List
+//   and replace the two placeholders above with real command IDs.
+//   All other script IDs and behaviour unchanged from MOD-6.
+// =====================================================================
+
 Zone SelectedTrackSend
 
-                        
-                 DisplayUpper|       TrackSendNameDisplay
-                 DisplayLower|       TrackSendPanDisplay
-           Touch+DisplayLower|       TrackSendVolumeDisplay
-         Control+DisplayLower|       TrackSendPrePostDisplay
-         Control+RotaryPush|         TrackSendPrePost
-          Option+RotaryPush|         TrackSendInvertPolarity
-          
-                         Solo|       NoAction
-           
-                         Mute|       TrackSendMute
-                 Control+Mute|       TrackSendMute
-                       Rotary|       TrackSendPan
-                   RotaryPush|       TrackSendStereoMonoToggle
-                        Fader|       TrackSendVolume
-           
-                 ChannelLeft         Bank SelectedTrackSend -1
-                 ChannelRight        Bank SelectedTrackSend 1
-                    BankLeft         Bank SelectedTrackSend -8
-                    BankRight        Bank SelectedTrackSend 8
-                    
-                                  
-// SEND - THIS WHAT YOU WANT TO HAPPEN WHEN GOING INTO THE HOME ZONE FROM SelectedTrackSend ZONE:
+DisplayUpper|              TrackSendNameDisplay
+DisplayLower|              TrackSendPanDisplay
+Touch+DisplayLower|        TrackSendVolumeDisplay
+Control+DisplayLower|      TrackSendPrePostDisplay
+Control+RotaryPush|        TrackSendPrePost
+Option+RotaryPush|         TrackSendInvertPolarity
 
-                    /Shift+Send       Reaper _S&M_CYCLACTION_258
-                    /Shift+Send       Reaper _SWSTL_HIDEUNSEL
-                    /Shift+Send       Reaper  _RSaeb8288b2019d5651b11138904e570e27a58c2db                                Feedback=No // Script: mpl_Minimize all tracks envelopes heights.lua
-                    /Shift+Send       Reaper  _RS0864070d129fe58581acadd27a177b6c942943e6                                Feedback=No // Script: mpl_Maximize selected tracks envelopes heights.lua 
-                    /Shift+Send       Reaper _RS9f80e4095144a2a58da117d417663a332e05b640                                 Feedback=No // Script: Archie_View; Zoom TCP to fit screen.lua
-                          Send       Reaper  _SWSTL_SHOWALL                                                             Feedback=No // show all tracks 
-                          Send       ClearModifiers                                                                     Feedback=No // ClearModifiers
-                          Send       Reaper  41150                                                                      Feedback=No // hide all envelopes all tracks
-                          Send       Reaper  40088                                                                      Feedback=No // Automation: Set all tracks automation mode to trim/read
-                          Send       Reaper  40454                                                                      Feedback=No // Screenset: Load window set #01
-                          Send       Reaper  _RS9f80e4095144a2a58da117d417663a332e05b640                                Feedback=No // Script: Archie_View; Zoom TCP to fit screen.lua  
-                          Send       Reaper  _RS7fb3d74a01cfeae229ad75b83192ca5086acbdbd                                Feedback=No // Script: Lokasenna_Scroll mixer to first selected track.lua               
-                 InvertFB+Send       GoHome     
-                              
-// TRACK - THIS WHAT YOU WANT TO HAPPEN WHEN GOING INTO THE SelectedTracks ZONE:
-   	  	
-                         Track       ClearModifiers  		          
-                         Track       Reaper  _SWS_MINTRACKS                                   Feedback=No // SWS: Minimize selected track(s)                                                                            
-                         Track       Reaper   40401                                           Feedback=No // Automation: Set all tracks automation mode to read                              
-                         Track       Reaper   41150                                           Feedback=No // hide all envelopes all tracks 
-                         Track       Reaper  _SWSTL_HIDEUNSEL                                 Feedback=No // SWS: Hide unselected track(s) 
-                         Track       Reaper   41148                                           Feedback=No // Envelope: Show all envelopes for tracks
-                         Track       Reaper  _RSaeb8288b2019d5651b11138904e570e27a58c2db      Feedback=No // Script: mpl_Minimize all tracks envelopes heights.lua
-                         Track       Reaper  _RS0864070d129fe58581acadd27a177b6c942943e6      Feedback=No // Script: mpl_Maximize selected tracks envelopes heights.lua 
-                         Track       Reaper   40457                                           Feedback=No // Screenset: Load track view #04 - track envelopes
-                         Track       Reaper  _RS9f80e4095144a2a58da117d417663a332e05b640      Feedback=No // Script: Archie_View; Zoom TCP to fit screen.lua
-                         Track       Reaper  _RS8659c058fc32cd3fb1a7dcdedd2505d977ce6ec5      Feedback=No // Script: HeDa_View Scroll Top.lua
-                         Track       Reaper  _SWS_VZOOMFITMIN   
-                                   
-                         Track       GoZone SelectedTracks   
-                         
-// PLUGIN - THIS WHAT YOU WANT TO HAPPEN WHEN GOING INTO THE SelectedTrackFX ZONE:
-                                            
-                         Plugin      Reaper  41150                                                                     Feedback=No // Envelope: Hide all envelopes for all tracks                     
-                         Plugin      Reaper  _RSaeb8288b2019d5651b11138904e570e27a58c2db                               Feedback=No // Script: mpl_Minimize all tracks envelopes heights.lua                                   
-                         Plugin      ClearModifier Shift                                                               Feedback=No // ClearModifier Shift      
-                         Plugin      ClearModifier Option                                                              Feedback=No // ClearModifier Option 
-                         Plugin      Reaper  40401                                                                     Feedback=No // Automation: Set all tracks automation mode to read                          
+RecordArm1   Reaper _RS_PASTE_RECORDARM_SLOT_1_ID_HERE
+RecordArm2   Reaper _RS_PASTE_RECORDARM_SLOT_2_ID_HERE
+RecordArm3   Reaper _RS_PASTE_RECORDARM_SLOT_3_ID_HERE
+RecordArm4   Reaper _RS_PASTE_RECORDARM_SLOT_4_ID_HERE
+RecordArm5   Reaper _RS_PASTE_RECORDARM_SLOT_5_ID_HERE
+RecordArm6   Reaper _RS_PASTE_RECORDARM_SLOT_6_ID_HERE
+RecordArm7   Reaper _RS_PASTE_RECORDARM_SLOT_7_ID_HERE
+RecordArm8   Reaper _RS_PASTE_RECORDARM_SLOT_8_ID_HERE
+
+Solo1    Reaper _RS966ac3f3417f8d0edcd968175f5b2c1395d13ac8
+Solo2    Reaper _RS_PASTE_SOLO_SLOT_2_ID_HERE
+Solo3    Reaper _RS_PASTE_SOLO_SLOT_3_ID_HERE
+Solo4    Reaper _RS_PASTE_SOLO_SLOT_4_ID_HERE
+Solo5    Reaper _RS_PASTE_SOLO_SLOT_5_ID_HERE
+Solo6    Reaper _RS_PASTE_SOLO_SLOT_6_ID_HERE
+Solo7    Reaper _RS_PASTE_SOLO_SLOT_7_ID_HERE
+Solo8    Reaper _RS_PASTE_SOLO_SLOT_8_ID_HERE
+
+Mute|                      TrackSendMute
+Control+Mute|              TrackSendMute
+
+Fader|                     TrackSendVolume
+Rotary|                    TrackSendVolume
+
+Up                         Reaper _RS426569563966b6ce62be7b5525c3adb59c880873 //
+Down                       Reaper _RSb310af6a4f3d4e8022d2e35ddde907ba480bae46 //
+
+//RotaryPush1   Reaper _RS261ec2bf9934f75c7a59405fea4e6ad35e08009e //
+//RotaryPush2   Reaper _RSd598172daf7515171048653ca4ed0d0a8ceb67b2 //
+//RotaryPush3   Reaper _RS42f43f6ee1eb6babef3979adac6070ca0097fc0c //
+//RotaryPush4   Reaper _RS5a03ddd4d0ae1efe9589d692868c5bb27f5238e0 //
+//RotaryPush5   Reaper _RS1bc6cad683fe5bd10c753b54e95068b7de3de804 //
+//RotaryPush6   Reaper _RS392f6139fca1d4ff3efee737e161204919b50a95 //
+//RotaryPush7   Reaper _RS45c656bb205a49f03389503ead3a5151d56cfd57 //
+//RotaryPush8   Reaper _RS9fa589f488abf9915a931f57d46637d42cba6932 //
+//
+RotaryPush1    Reaper _RS261ec2bf9934f75c7a59405fea4e6ad35e08009e   Feedback=No
+RotaryPush1    Reaper _RS4087032c19c3b5b49093c6be2fbea67b05479633   Feedback=No HoldDelay=500
+RotaryPush2    Reaper _RSd598172daf7515171048653ca4ed0d0a8ceb67b2   Feedback=No
+RotaryPush2    Reaper _RS4087032c19c3b5b49093c6be2fbea67b05479633   Feedback=No HoldDelay=500
+RotaryPush3    Reaper _RS42f43f6ee1eb6babef3979adac6070ca0097fc0c   Feedback=No
+RotaryPush3    Reaper _RS4087032c19c3b5b49093c6be2fbea67b05479633   Feedback=No HoldDelay=500
+RotaryPush4    Reaper _RS5a03ddd4d0ae1efe9589d692868c5bb27f5238e0   Feedback=No
+RotaryPush4    Reaper _RS4087032c19c3b5b49093c6be2fbea67b05479633   Feedback=No HoldDelay=500
+RotaryPush5    Reaper _RS1bc6cad683fe5bd10c753b54e95068b7de3de804   Feedback=No
+RotaryPush5    Reaper _RS4087032c19c3b5b49093c6be2fbea67b05479633   Feedback=No HoldDelay=500
+RotaryPush6    Reaper _RS392f6139fca1d4ff3efee737e161204919b50a95   Feedback=No
+RotaryPush6    Reaper _RS4087032c19c3b5b49093c6be2fbea67b05479633   Feedback=No HoldDelay=500
+RotaryPush7    Reaper _RS45c656bb205a49f03389503ead3a5151d56cfd57   Feedback=No
+RotaryPush7    Reaper _RS4087032c19c3b5b49093c6be2fbea67b05479633   Feedback=No HoldDelay=500
+RotaryPush8    Reaper _RS9fa589f488abf9915a931f57d46637d42cba6932]  Feedback=No
+RotaryPush8    Reaper _RS4087032c19c3b5b49093c6be2fbea67b05479633   Feedback=No HoldDelay=500
+
+RotaryPush|          Reaper _RS4087032c19c3b5b49093c6be2fbea67b05479633  Feedback=No HoldDelay=500 //
+
+InvertFB+Select1   Reaper _RS_PASTE_ROTARYPUSH_SLOT_8_ID_HERE //
+InvertFB+Select2   Reaper _RS_PASTE_ROTARYPUSH_SLOT_8_ID_HERE //
+InvertFB+Select3   Reaper _RS_PASTE_ROTARYPUSH_SLOT_3_ID_HERE //
+InvertFB+Select4   Reaper _RS_PASTE_ROTARYPUSH_SLOT_4_ID_HERE //
+InvertFB+Select5   Reaper _RS_PASTE_ROTARYPUSH_SLOT_5_ID_HERE //
+InvertFB+Select6   Reaper _RS_PASTE_ROTARYPUSH_SLOT_6_ID_HERE //
+InvertFB+Select7   Reaper _RS_PASTE_ROTARYPUSH_SLOT_7_ID_HERE //
+InvertFB+Select8   Reaper _RS_PASTE_ROTARYPUSH_SLOT_8_ID_HERE //
+
+ChannelLeft                Bank SelectedTrackSend -1
+ChannelRight               Bank SelectedTrackSend 1
+BankLeft                   Bank SelectedTrackSend -8
+BankRight                  Bank SelectedTrackSend 8
+
+Send              ClearModifiers                                                                        Feedback=No
+Send              Reaper _SWSTL_SHOWALL                                                                 Feedback=No
+Send              Reaper 40086                                                                          Feedback=No
+Send              Reaper 40458                                                                          Feedback=No
+Send              Reaper _S&M_WNCLS3                                                                    Feedback=No
+Send              Reaper _S&M_WNCLS4                                                                    Feedback=No
+Send              Reaper 41150                                                                          Feedback=No
+Send              Reaper _BR_SHOW_SEND_ENV_VOL_SEL_TRACK                                                Feedback=No
+Send              Reaper _RSaeb8288b2019d5651b11138904e570e27a58c2db                                    Feedback=No
+Send              Reaper _RS0864070d129fe58581acadd27a177b6c942943e6                                    Feedback=No
+Send              Reaper _RS9f80e4095144a2a58da117d417663a332e05b640                                    Feedback=No
+Send              Reaper _RS7fb3d74a01cfeae229ad75b83192ca5086acbdbd                                    Feedback=No
+
+Read              TrackAutoMode 1
+Write             TrackAutoMode 3
+Trim              TrackAutoMode 0
+Touch             TrackAutoMode 2
+Latch             TrackAutoMode 4
+Group             TrackAutoMode 5
+Global+Read       GlobalAutoMode 1
+Global+Write      GlobalAutoMode 3
+Global+Trim       GlobalAutoMode 0
+Global+Touch      GlobalAutoMode 2
+Global+Latch      GlobalAutoMode 4
+Global+Group      GlobalAutoMode 5
+
+
+
+
+Send               GlobalAutoMode 0
+InvertFB+Send      GoHome
+
+ZoneEnd
                          Plugin      Reaper  _SWS_UNSELMASTER                                                          Feedback=No // SWS: Unselect master track
                          Plugin      Reaper  _SWS_HIDEMASTER                                                           Feedback=No // SWS: Hide master track                                        
                          Plugin      Reaper  _SWSTL_HIDEUNSEL                                                          Feedback=No // SWS: Hide unselected track(s)                            
