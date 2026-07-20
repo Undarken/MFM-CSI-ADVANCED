@@ -2752,3 +2752,139 @@ Displays in track zone
 
 •	Zoom Zone (The Block itself): “How loud is it? What pitch is it? Are the fades curved? Is it reversed? Is it muted?” -> Faders and Toggles.
 •	Nudge Zone (The Timeline): “When does it play? Can I slip the audio slightly earlier? Can I split it here? Can I pull the left edge back a frame?” -> Rotaries and Jog Wheel.
+
+THE BOOK OF LAWS
+REAPER CSI ARCHITECTURE (MASTER FILE)
+VERSION: MCU PRO LAYER 1 ARCHITECTURE V2.4
+V2.4 change: MOD2 revised — Select+Hold established as a universal Hardware Law (always opens that channel's Routing Micro Zone), Routing content made channel-scoped (2.2), Pan Law moved to its own dedicated Pan button (2.3), Arrange-Window Continuity and Automation Micro Zone renumbered to 2.4 and 2.5.
+
+1. MODIFIER GRAMMAR (THE LANGUAGE)
+	•	CONTROL (The Track Noun): Anything related to Track edits, track selection, or routing.
+	•	OPTION (The Item Noun & Fine Control): Anything related to Item edits. On faders/rotaries, Option means “Micro/Fine Resolution” (e.g., Option + Fader = cents instead of semitones).
+	•	SHIFT (The Expansion Adjective): Multiple Select, Add to Selection, or “Painting” (e.g., Shift + JogWheel = select multiple items).
+	•	ALT (The Alternate Page & Global): Accesses alternate parameter layers (e.g., switching a fader from ‘Length’ to ‘Shape’). Also handles global/timeline commands like Zooming and Grid scaling.
+	•	RULE: No modifier = normal/coarse layer. Alt + Option = fine control of the alternate page/layer.
+2. HARDWARE LAWS (THE CONTROLS)
+	•	THE MIRROR RULE: Faders and Rotaries on the same channel ALWAYS control the exact same parameter.
+	•	FADERS: Continuous, macro sweeps (e.g., sliding a fade length).
+	•	ROTARIES: Discrete stepped values and lists. ALL list-cycling (e.g., scrolling through Fade Shapes or Takes) is strictly handled by turning Rotaries.
+	•	SELECT BUTTONS: Fixed Anchor Points only. Jumps to the 3 or 4 most mathematically/musically useful values (e.g., 0 -> +7 -> +12). NEVER used for endless list cycling.
+	•	FLIP BUTTON: the one dedicated “invert/override” toggle per zone context — Phase Invert at track/channel-strip level, Plugin Bypass inside any FX zone. Confirmed house standard across Molot, elysia, Crave, and bx_digital — Flip → FXParam <bypass> [0.0 1.0] identically across every modifier combo.
+3. UI FEEDBACK LAWS (THE LIGHTS)
+	•	RECORD ARM ROW (The Lock): Controls whether a parameter is available to the fader.
+	•	RED LIGHT (ON): Parameter is Locked/Protected. Fader is disconnected.
+	•	DARK (OFF): Parameter is Unlocked, active, and editable.
+	•	MUTE ROW (The Audition): Controls the audio effect of the parameter.
+	•	ORANGE LIGHT (ON): Temporarily bypasses the channel’s effect on the item (e.g., bypass Fade In to hear raw edit).
+	•	SOLO ROW (The Toggles): Used only for specific behavior toggles (e.g., “Preserve Pitch”).
+	•	NO ACTION RULE: If a button does not have a mathematically perfect, highly repetitive use-case, assign NoAction InvertFB to keep the board dark and safe.
+4. ZONE NAVIGATION (THE ESCAPE HATCH)
+	•	IN/OUT TOGGLE: The button that takes you into a zone is the exact same button that takes you out (returns to GoZone Home).
+	•	DOUBLE PRESS: Acts as a universal panic button. DoublePressing the active zone button forces a GoZone Home, regardless of how many levels deep (parent zone or Micro Zone — see MOD2).
+	•	F1–F8: Strictly reserved for REAPER visibility/filter macros. They are explicitly prohibited from executing CSI GoZone commands.
+	•	ALT + ZONE BUTTON: Accesses related alternative zones (e.g., Plugin = Tweak FX. Alt + Plugin = Route FX).
+5. SPECIFIC ZONE MAPPING: ITEMSHAPE (ZOOM)
+Purpose: Sound-shaping zone for selected items. Not for physical item placement/nudging.
+Navigation in this zone: Shift + Jog is used to add items to the selection. Option is used for fine fader control.
+Left Side (Channels 1, 2, 3): Tone / Time / Space
+	•	Ch 1 (Pitch): Fader = Coarse · Rotary = Semitones · Select = Anchors (0 / +7 / +12 / -12)
+	•	Ch 2 (Speed): Fader = Coarse · Rotary = 0.1x steps
+	•	Ch 3 (Pan): Fader = L/R · Rotary = 10% steps
+Middle (Channels 4, 5): Separation Buffer
+	•	Ch 4 & 5: Kept blank to create physical separation.
+Right Side (Channels 6, 7, 8): Amplitude Envelope
+	•	Ch 6 (Fade In): Fader = Length · Rotary = Shape
+	•	Ch 7 (Fade Out): Fader = Length · Rotary = Shape
+	•	Ch 8 (Volume): Fader = Gain · Rotary = 1dB steps · Select = Anchors (-6 / 0 / +6)
+5a. Bypass Row (ItemShape)
+Each of the 8 ItemShape channels' Bypass slider does store current value → snap to neutral → restore on toggle-off. Independent of, and stacks with, the Lock row.
+	•	Pitch / Rate / Pan / Volume → snap to neutral (0 semitones / 1x / center / unity gain).
+	•	Fade In / Fade Out → snap length to 0.
+	•	XFade Center & XFade Length (separate bypass toggles, same physical effect) → each independently stores the right item's exact position + both items' fade lengths/shapes, zeroes the crossfade entirely, restores exactly on toggle-off.
+5b. FX Zone Pattern
+Shared structure confirmed across Molot / elysia / Crave / bx_digital:
+	•	Base layer = 8 main controls
+	•	Shift = secondary rotary page
+	•	Control = Left/Mono deep bank
+	•	Shift+Control / Control+Option = that bank's freq/Q rotary layers
+	•	Alt = mirrored Right/Side bank
+	•	Flip = plugin bypass
+	•	RecordArm = real per-band toggles (often re-declared identically under every modifier so the physical button stays consistent)
+	•	Zones may locally alias spare buttons as extra modifiers (Marker→Control, Nudge→Alt, Drop→Option, Zoom→Shift).
+6. ROW ROLES: SELECTED TRACK FX MENU
+RECORD ARM ROW (LOCK / OFFLINE)
+RecordArm = on/off line for the selected FX in that slot.
+	•	RecordArm ON = selected FX is taken offline / hard off.
+	•	RecordArm OFF = selected FX is online / available.
+MUTE ROW (BYPASS)
+Mute = bypass selected FX in that slot.
+	•	Mute ON = selected FX is bypassed.
+	•	Mute OFF = selected FX is not bypassed (normal processing).
+SOLO ROW (TRUE FX SOLO WITH RESTORE)
+Solo = solo that individual FX on the selected track, without opening/showing FX windows.
+	•	Solo ON = store enabled state of every FX on the selected track, leave only the selected FX enabled, bypass all other FX on that track.
+	•	Solo OFF = restore the exact stored enabled/bypassed state for every FX on that track (only what was on comes back on, only what was off stays off; not a blind “enable all”).
+MOD1 — MODIFIER & BUTTON LAW MASTER CLIP
+Note: this section is preserved verbatim from source. It was cut off mid-sentence in the original and the remainder is still pending from Mike — flagged, not fabricated.
+MODIFIERS
+No modifier
+	•	Default page.
+	•	Select steps through useful anchor values; displays show the stepped state.
+Option
+	•	Coarse hands-on edit for the same concept on that channel.
+	•	Faders/rotaries move the main working parameter set in a coarse way.
+Option + Shift
+	•	Fine adjustment layer for the same concept.
+	•	Faders/rotaries give finer or deeper control of the same thing Option is working on.
+Control
+	•	Track / structural layer.
+	•	Used for track selection, banking, and higher-level navigation or track tools.
+Alt
+	•	Two meanings:
+	•	Alt + JogWheel = arrange/grid zoom in/out (keep this global whenever possible).
+	•	On channels with a “type / shape / mode” dimension, Alt switches the strip to that type/shape layer (often with anchors).
+Alt + Option
+	•	Fine control of the Alt type/shape layer.
+	•	Fine shape, fine type, etc., for the same concept.
+Shift (alone)
+	•	Expansion, selection-growth, additive behavior.
+	•	“Add more tracks/items to selection”, range-style moves, etc.
+Flip
+	•	Currently reserved / NoAction.
+	•	Leave unused until a clear global job is defined.
+BUTTON ROWS & CORE BUTTONS
+RecordArm row (per channel)
+	•	“Lock/protect” or real on/off when the target has a meaningful enable state.
+	•	If there is no sensible enable/disable for that parameter, leave this row unused rather than faking it.
+Mute row (per channel)
+	•	Audition / bypass.
+	•	When a parameter has no true on/off, this row controls bypass so you can hear the effect in/out quickly.
+Solo row (per channel)
+Reserved strictly for specific behavior toggles that fit the strip's concept (e.g. “pres…
+[SOURCE CUT OFF HERE — remainder pending from Mike]
+
+MOD2 — MICRO ZONES & CONTINUITY LAWS
+2.1 MICRO ZONES (THE FOLDER PRINCIPLE)
+A Micro Zone is a small, bounded sub-zone nested inside a parent zone — for short lists of states, not full 8-channel control surfaces.
+	•	Entry to parent zone: the zone button (e.g., Send) takes you from Home into that zone, per Law 4.
+	•	Select+Hold is universal: on any channel, in any zone, it opens that channel's Routing Micro Zone. This is a Hardware Law — the gesture always means the same thing, the same way Faders and Rotaries always mirror.
+	•	Content inside the Micro Zone is channel-scoped, not identical. Each channel's Routing Micro Zone contains whatever pages are relevant to that channel's own signal path (see 2.2).
+	•	Navigate pages: Rotary scrolls between pages (e.g. Input / Output / Pre-Post / Receives); Up/Down step the same list one page at a time. Both drive the identical index — Rotary for fast scanning, Up/Down for precise single steps. Display shows current page and value either way.
+	•	Exit: press the same zone button (e.g., Send) to step back one level — first press: Micro Zone → parent zone. Second press: parent zone → Home. This is Law 4's In/Out Toggle applied recursively, one level per press.
+	•	Double Press (Law 4) still overrides at any depth — always jumps straight to Home, skipping the step-by-step walk-back.
+	•	RotaryPush stays free for its existing job (hold-to-center per-slot, HoldDelay=500) rather than being overloaded as an exit control.
+	•	Micro Zones are folders within their parent zone — they don't appear in top-level zone navigation.
+2.2 CHANNEL-SCOPED ROUTING CONTENT (Select+Hold, by channel type)
+	•	Send channel → Input / Output / Pre-Post Fader
+	•	Send channel, inverse view → Receives (via Send+Hold on the track button — a separate physical gesture from per-channel Select, mirroring the outgoing Send pattern in reverse)
+	•	Instrument-bearing channel → Patch/preset browse
+	•	Any other channel → Input / Output only, where nothing more specific applies
+2.3 PAN BUTTON
+	•	Pan → Pan Law / Pan Mode directly. Not routed through the Select+Hold Micro Zone — Pan Law lives on its own dedicated button since it's a Pan-specific concept, not a routing concept.
+2.4 ARRANGE-WINDOW CONTINUITY LAW
+Select+Hold must trigger the same Micro Zone behavior in the main arrange window as on the surface, for the same underlying concept. The gesture is bound to the concept, not to the hardware.
+2.5 AUTOMATION MICRO ZONE (PER SUB-ZONE)
+Every zone that carries automatable parameters gets its own Automation Micro Zone, since the automation target differs by context (track vs. send vs. item) even though the surface behavior stays consistent.
+	•	All automation mode buttons except Trim → GoZone into that context's Envelope Drawing Zone.
+	•	Trim → sets mode only, never enters drawing. Trim has no drawable value; folding it into the drawing zone would add a mode with nothing to edit.
+
